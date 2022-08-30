@@ -1,0 +1,78 @@
+@font-face {
+    font-family: Inter-Bold;
+    src: url(./fonts/Inter-Bold.otf);
+}
+
+@font-face {
+    font-family: Inter-Black;
+    src: url(./fonts/Inter-Black.otf);
+}
+
+body {
+    background-color: #263341;
+    color: white;
+    font-family: Inter-Bold;
+    font-size: 12px;
+    margin: 0px;
+    padding: 0px;
+    align-items: center;
+}
+
+#login {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
+
+#header {
+    position: relative;
+    margin: 0 auto;
+    clear: left;
+    height: auto;
+    z-index: 0;
+    text-align: center;
+    /* Add This*/
+}
+
+button {
+    background-color: #f1304d;
+    margin: 1rem;
+    border-radius: 1rem;
+    border: none;
+    font-family: Inter-Bold;
+    color: white;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+    transition-duration: 0.4s;
+}
+
+button:hover {
+    color: white;
+    cursor: pointer;
+    scale: 1.1;
+    transition-duration: 0.4s;
+}
+
+#helpButton {
+    background-color: #646d78;
+}
+
+input {
+    border: none;
+    margin: .3rem;
+    background-color: #212027;
+    padding: 0.3rem;
+    border-radius: 0.3rem;
+    color: white;
+}
+
+input:focus {
+    outline: none;
+}
+
+input::placeholder {
+    color: #323d55;
+}
