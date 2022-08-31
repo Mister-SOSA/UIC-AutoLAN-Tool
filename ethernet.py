@@ -1,30 +1,55 @@
-from tracemalloc import start
 import wx
-import os
 import requests
 import eel
 import keyring
-import wx
 import wx.adv
 from requests.auth import HTTPBasicAuth
+from win10toast import ToastNotifier
+
+toaster = ToastNotifier()
+eel.init('web')
 
 
+@eel.expose
 def authenticate():
     username, password = user_credentials()
+    # authentication = HTTPBasicAuth('agocma2', 'Mojezeljice.1')
     authentication = HTTPBasicAuth(username, password)
     r = requests.get('http://uic.edu', auth=authentication)
     status = r.status_code
     if status == 200:
+        toaster.show_toast("Connected!",
+                           f"Authenticated to LAN as {username}",
+                           icon_path="./ethernet.ico",
+                           duration=10, threaded=True)
+        start_taskbar()
         return True
     else:
         return False
 
 
+def is_authenticated():
+    print('Checking authentication')
+    r = requests.get('http://uic.edu')
+    status = r.status_code
+    if status == 200:
+        return True
+    elif status == 401:
+        return False
+
+
+@eel.expose
 def register_keyring(username, password):
     keyring.set_password('UIC_Ethernet', username, password)
+    if authenticate():
+        return True
+    else:
+        eel.show_error()
+        return False
 
 
 def user_credentials():
+    print('Getting credentials')
     username = keyring.get_credential('UIC_Ethernet', None).username
     password = keyring.get_password('UIC_Ethernet', username)
     return [username, password]
@@ -38,8 +63,7 @@ def keyring_exists():
 
 
 def start_setup():
-    eel.init('web')
-    eel.start('index.html', size=(300, 250))
+    eel.start('index.html', size=(300, 250), shutdown_delay=0)
 
 
 def create_menu_item(menu, label, func):
@@ -66,17 +90,27 @@ class TaskBarIcon(wx.adv.TaskBarIcon):
         self.SetIcon(icon, 'UIC Auto-LAN')
 
     def on_left_down(self, event):
-        print('Tray icon was left-clicked.')
+        pass
 
     def on_logout(self, event):
         # Delete credentials in the keyring
-        keyring.delete_password('UIC_Ethernet', user_credentials()[0])
+        try:
+            username = keyring.get_credential('UIC_Ethernet', None).username
+            keyring.delete_password('UIC_Ethernet', user_credentials()[0])
+            toaster.show_toast("Logged out",
+                               f"The user {username} has been removed from the keychain.",
+                               icon_path="./ethernet.ico")
+            start_setup()
+        except Exception as e:
+            print(e)
 
     def on_exit(self, event):
         wx.CallAfter(self.Destroy)
 
 
+@eel.expose
 def start_taskbar():
+    print('starting taskbar')
     app = wx.App()
     TaskBarIcon()
     app.MainLoop()
@@ -85,7 +119,9 @@ def start_taskbar():
 def main():
     if not keyring_exists():
         start_setup()
-    else:
+    elif keyring_exists() and not is_authenticated():
+        authenticate()
+    elif is_authenticated() and keyring_exists():
         start_taskbar()
 
 

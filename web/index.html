@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html>
-<script type="text/javascript" src="./eel.js"></script>
+<script type="text/javascript" src="/eel.js"></script>
+<script type="text/javascript" src="./main.js"></script>
+<script type="text/javascript" src="./extra_scripts/notyf.min.js"></script>
+<link rel="stylesheet" type="text/css" href="./extra_scripts/notyf.min.css">
+
 <link rel="stylesheet" href="./styles.css">
 
 <head>
@@ -15,12 +19,12 @@
     <!-- Username and Password Form -->
     <div id="login">
         <form>
-            <input autocomplete="off" type="text" name="username" placeholder="NetID">
+            <input id="username" autocomplete="off" type="text" name="username" placeholder="NetID">
             <br>
-            <input autocomplete="off" type="password" name="password" placeholder="Password">
+            <input id="password" autocomplete="off" type="password" name="password" placeholder="Password">
             <br>
-            <button id="helpButton">Help</button>
-            <button type="submit">Connect</button>
+            <button onclick="openHelp()" id="helpButton">Help</button>
+            <button onclick="registerKeyring()">Connect</button>
 
         </form>
 
