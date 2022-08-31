@@ -13,7 +13,6 @@ eel.init('web')
 @eel.expose
 def authenticate():
     username, password = user_credentials()
-    # authentication = HTTPBasicAuth('agocma2', 'Mojezeljice.1')
     authentication = HTTPBasicAuth(username, password)
     r = requests.get('http://uic.edu', auth=authentication)
     status = r.status_code
